@@ -1,420 +1,328 @@
-
-let html = document.getElementsByTagName("html")[0];
-let body = html.getElementsByTagName("body")[0];
-let canvas = document.createElement("canvas");
-let ctx = canvas.getContext("2d");
-
-body.appendChild(canvas);
-canvas.style.backgroundColor = "#9c9c9c";
-
-let canvasSize = 500;
-let extraCanvasSizeY = 60;
-canvas.style.width = `${canvasSize}` + "px";
-canvas.style.height = `${canvasSize + extraCanvasSizeY}` + "px";
-canvas.width = canvasSize;
-canvas.height = canvasSize + extraCanvasSizeY;
-ctx.textAlign = "center";
-
 class Game {
-    constructor(proportion) {
-        this.gameStats = "screenInitial";
-        this.applesDeleted = 0;
-        this.proportion = proportion;
-        this.score = 0;
-        this.time = 0;
-        
-        this.fontTextPainel = "40px Arial";
-        this.colorTextPainel = "#3a21db";
+    constructor() {
 
-        this.frames = 5;
+        {
+            this.canvas_game = document.getElementById("canvasGame");
+            this.canvas_painel = document.getElementById("canvasPainel");
+            this.ctx_game = this.canvas_game.getContext("2d");
+            this.ctx_painel = this.canvas_painel.getContext("2d");
+        } //referencias
+
+        {
+        this.dimensions_game = [5, 5];
+        this.dimensions_painel = [this.dimensions_game[0], this.dimensions_game[1] / 8];
+
+        this.proportion = 100;
+
+        this.sizes_painel = [this.dimensions_painel[0] * this.proportion, this.dimensions_painel[1] * this.proportion];
+        this.sizes_game = [this.dimensions_game[0] * this.proportion, this.dimensions_game[1] * this.proportion];
+        this.sizes_button = [100, 30];
+
+        this.frames = 2;
         
-        this.applesDeterioration = true;
-        this.deteriorationFrames = 20;
-        this.timeApplesDeterioration = 5;
-        this.applesInDeterioration = [];
-        this.applesMultiplier = 2;
+        this.font_textPainel = "47px Arial";
+        this.color_textPainel = "#4800f0";
+        } //configuraveis
         
+        {
+            this.canvas_game.style.backgroundColor = "gray";
+            this.canvas_painel.style.backgroundColor = "gray";
+            this.canvas_game.style.width = `${this.dimensions_game[0] * this.proportion}px`;
+            this.canvas_game.style.height = `${this.dimensions_game[1] * this.proportion}px`;
+            this.canvas_painel.style.width = `${this.dimensions_painel[0] * this.proportion}px`;
+            this.canvas_painel.style.height = `${this.dimensions_painel[1] * this.proportion}px`;
+            this.canvas_game.width = this.dimensions_game[0] * this.proportion;
+            this.canvas_game.height = this.dimensions_game[1] * this.proportion;
+            this.canvas_painel.width = this.dimensions_painel[0] * this.proportion;
+            this.canvas_painel.height = this.dimensions_painel[1] * this.proportion;
+
+            this.ctx_painel.textAlign = "center";
+            this.ctx_painel.textBaseline = "center";
+        } // set de dados
     }
-    
-    displayScreen() {
-        switch (this.gameStats) {
+
+    setScreen(stats) {
+        this.ctx_game.clearRect(0, 0, this.sizes_game[0], this.sizes_game[1]);
+        switch (stats) {
             case "screenInitial":
-                this.drawPainel("Snake Game");
-
-                this.buttonPlay.drawButton();
-                this.buttonPlay.startVerifyClick();
-
-                this.buttonSettings.drawButton();
-                this.buttonSettings.startVerifyClick();
+                this.setPainel("Snake Game")
+                this.button_play.start();
                 break;
             case "playing":
-                snake.init((canvasSize / 2) - (game.proportion / 2), extraCanvasSizeY + (canvasSize / 2) - (game.proportion / 2), "up");
-                this.startGame();
-                break;
-            case "gameOver":
-                this.score = 0;
-                apples = [];
-                snake.positions = [];
-                clearInterval(this.intervalDrawPainel);
-                clearInterval(this.intervalGame);
-                this.buttonRestart.drawButton();
-                this.buttonRestart.startVerifyClick();
+                snake.draw();
+                this.setPainel("Hackeando PC...");
+                setTimeout(() => {
+                    this.startGame();
+                }, 1000);
                 break;
         }
     }
-    eraseScreen() {
-        ctx.clearRect(0, 0, canvasSize, canvasSize + extraCanvasSizeY);
-        this.buttons.forEach(button => {
-            button.onScreen = false;
-        });
-    }
-    eraseScreenGame() {
-        ctx.clearRect(0, extraCanvasSizeY + 1, canvasSize, canvasSize + extraCanvasSizeY);
-    }
-
-    createButtons(size, positionInitial, distance) {
-        this.buttonPlay = new Button("Play", size, [positionInitial[0], positionInitial[1] + (extraCanvasSizeY / 2)], "30px Arial", "black", "green");
-        this.buttonRestart = new Button("Restart", size, [positionInitial[0], positionInitial[1] + (extraCanvasSizeY / 2)], "30px Arial", "black", "green");
-        this.buttons = [this.buttonPlay, this.buttonRestart];
-    }
-    buttonClicked(nameButton) {
-        this.eraseScreen();
-        switch (nameButton) {
-            case "Play":
-                this.gameStats = "playing";
-                break;
-            case "Restart":
-                this.gameStats = "screenInitial";
-                break;
-            case "ExitSettings":
-                this.gameStats = "screenInitial";
-                break;
-        }
-        setTimeout(() => {
-            this.displayScreen();
-        }, 10);
-    }
-
-    drawPainel(text) {
-        let textPainel = text ? text : this.setTextStatistics();
-        ctx.font = this.fontTextPainel;
-        ctx.fillStyle = this.colorTextPainel;
-        let sizeY = ctx.measureText(textPainel).actualBoundingBoxAscent;
-        ctx.clearRect(0, 0, canvasSize, extraCanvasSizeY);
-        ctx.fillRect(0, extraCanvasSizeY, canvasSize, 1);
-        ctx.fillText(textPainel, canvasSize / 2, (extraCanvasSizeY / 2) + (sizeY / 2));
-    }
-    setTextStatistics() {
-        let numZeros = 6 - this.score.toString().length;
-        let zeros = "";
-        for (let i = 0; i < numZeros; i++) {
-            zeros.concat("0");
-        }
-        let textScore = zeros + this.score;
-        let textTime = this.time.toFixed(2).toString();
-
-        let textStatistics = `Time: ${((performance.now() - this.timeStart) / 1000).toFixed(2)} Score: ${textScore}`;
-        return textStatistics;
-    }
-
     startGame() {
-        this.eraseScreen();
-        this.timeStart = performance.now()
-        this.intervalDrawPainel = setInterval(() => {
-            this.drawPainel();
-        }, 10);
-        snake.draw();
-        snake.startVerifyChangeMove();
-        for(let i = 0; i < this.applesMultiplier; i++) {
-            this.createApple();
-        }
-        this.intervalGame = setInterval(() => {
-            this.eraseScreenGame();
-            apples.forEach(apple => {
+        this.time = 0;
+        this.score = 0;
+        this.apples = [];
+        this.applesToCreate = 1;
+        snake.startVerifyMove();
+        this.startTimer();
+        this.startPainel();
+        this.startFrames();
+    }
+    startFrames() {
+        this.setFrame();
+    }
+    setFrame() {
+        ç(snake.positions.length);
+        setTimeout(() => {
+            this.ctx_game.clearRect(0, 0, this.sizes_game[0], this.sizes_game[1]);
+            this.apples.forEach(apple => {
                 apple.draw();
             });
-            snake.readyToSetDirection = true;
             snake.move();
             snake.draw();
-            if (this.score >= 230) {
-                alert("voce ganhou");
+            while (this.applesToCreate > 0) {
+                this.applesToCreate--;
+                this.createApple();
             }
+            this.setFrame();
         }, 1000 / this.frames);
     }
-
+    startTimer() {
+        setInterval(() => {
+            this.time += 0.01;
+        }, 10);
+    }
+    
     createApple() {
-        this.applesDeleted++;
         setTimeout(() => {
-            new Apple();
-        }, getRandomN(100, 1000));
+            this.apples.push(new Apple());
+        }, getRandomNumber(100, 1000));
     }
 
+    startPainel() {
+        setInterval(() => {
+            this.setPainel();
+        }, 10);
+    }
+    setPainel(text) {
+        this.ctx_painel.clearRect(0, 0, this.sizes_painel[0], this.sizes_painel[1]);
+        let text_painel;
+        if (text) {
+            text_painel = text;
+        } else {
+            text_painel = this.getText_painel();
+        }
+        this.ctx_painel.font = this.font_textPainel;
+        this.ctx_painel.fillStyle = this.color_textPainel;
+        let stats_text = this.ctx_painel.measureText(text_painel);
+        let size_text = stats_text.actualBoundingBoxAscent + stats_text.actualBoundingBoxDescent;
+        this.positions_textPainel = [this.sizes_painel[0] / 2, size_text + ((this.sizes_painel[1] - size_text) / 2)];
+        this.ctx_painel.fillText(text_painel, this.positions_textPainel[0], this.positions_textPainel[1]);
+    }
+    getText_painel() {
+        return `Time: ${this.time.toFixed(2)} Score: ${this.score}`;
+    }
+
+    createButtons() {
+        this.button_play = new Button("Play", "black", "25px Arial", "green", [(this.sizes_game[0] / 2) - (this.sizes_button[0] / 2), (this.sizes_game[1] / 2) - (this.sizes_button[1] / 2)], this.sizes_button);
+    }
+    buttonClicked(name) {
+        switch (name) {
+            case "Play":
+                this.setScreen("playing");
+                break;
+        }
+    }
 }
 
 class Button {
-    constructor(nameButton, size, position, fontText, backgroundColor, textColor) {
-        this.size = size;
-        this.position = [position[0], position[1]];
-        this.nameButton = nameButton;
-        this.onScreen = false;
-        this.fontText = fontText;
-        this.backgroundColor = backgroundColor;
+    constructor(name, backColor, textFont, textColor, positions, sizes) {
+        this.name = name;
+        this.backColor = backColor;
+        this.textFont = textFont;
         this.textColor = textColor;
+        this.positions = positions;
+        this.sizes = sizes;
     }
-    drawButton() {
-        this.onScreen = true;
-        ctx.font = this.fontText;
-        ctx.fillStyle = this.backgroundColor;
-        ctx.fillRect(this.position[0] - (this.size[0] / 2), this.position[1] - (this.size[1] / 2), this.size[0], this.size[1]);
-        let sizeY = ctx.measureText(this.nameButton).actualBoundingBoxAscent;
-        ctx.fillStyle = this.textColor;
-        ctx.fillText(this.nameButton, this.position[0], this.position[1] + (sizeY / 2));
+    draw() {
+        game.ctx_game.fillStyle = this.backColor;
+        game.ctx_game.fillRect(this.positions[0], this.positions[1], this.sizes[0], this.sizes[1]);
+
+        game.ctx_game.font = this.textFont;
+        game.ctx_game.fillStyle = this.textColor;
+        let statsText = game.ctx_game.measureText(this.name);
+        game.ctx_game.fillText(this.name, this.positions[0] + (statsText.width / 2), this.positions[1] + statsText.actualBoundingBoxAscent + statsText.actualBoundingBoxDescent);
     }
-    startVerifyClick() {
-        this.eventVerifyClick = addEventListener("click", (event) => {
-            if (this.onScreen) { 
-                if (
-                    event.offsetX >= this.position[0] - (this.size[0] / 2) &&
-                    event.offsetX <= this.position[0] + (this.size[0] / 2) &&
-                    event.offsetY >= this.position[1] - (this.size[1] / 2) &&
-                    event.offsetY <= this.position[1] + (this.size[1] / 2)
-                ) {
-                    game.buttonClicked(this.nameButton);
-                }
+    startCheckClick() {
+        addEventListener("click", (event) => {
+            if (
+                event.offsetX >= this.positions[0] &&
+                event.offsetX <= this.positions[0] + this.sizes[0] &&
+                event.offsetY >= this.positions[1] &&
+                event.offsetY <= this.positions[1] + this.sizes[1]
+            ) {
+                this.stopCheckClick();
+                game.buttonClicked(this.name);
             }
         })
+    }
+    stopCheckClick() {
+        removeEventListener("click", (event) => {
+            if (
+                event.offsetX >= this.positions[0] &&
+                event.offsetX <= this.positions[0] + this.sizes[0] &&
+                event.offsetY >= this.positions[1] &&
+                event.offsetY <= this.positions[1] + this.sizes[1]
+            ) {
+                this.stopCheckClick();
+                game.buttonClicked(this.name);
+            }
+        })
+    }
+    start() {
+        this.draw();
+        this.startCheckClick();
     }
 }
 
 class Snake {
-    init(pX, pY, direction) {
+    constructor(length, positionInitial) {
         this.size = game.proportion;
-        this.positions = [[getApproximateNumber(pX, this.size), getApproximateNumber(pY, this.size) + extraCanvasSizeY]];
-        this.direction = direction;
-        this.readyToSetDirection = true;
-        snake.createBody(2);
+        this.direction = "up";
+
+        this.headPosition = [getRoundNumber_interval(positionInitial[0] - this.size, this.size), getRoundNumber_interval(positionInitial[1] - this.size, this.size)];
+
+        let index_diference_length_AND_gameDimensions = this.direction == "left" || this.direction == "right" ? 0 : 1;
+        {
+
+        while ((this.headPosition[index_diference_length_AND_gameDimensions] + ((length) * this.size)) >= game.sizes_game[index_diference_length_AND_gameDimensions]) {
+        this.headPosition[index_diference_length_AND_gameDimensions] -= this.size;
+        } //reajusta a position da headSnake
+
+        this.positions = [this.headPosition];
+
+        for (let i = 1; i < length; i++) {
+            let newPosition = [this.positions[0][0], this.positions[0][1]];
+            newPosition[index_diference_length_AND_gameDimensions] += i*this.size;
+            this.positions.push(newPosition);
+        } //cria o body (menos a head da snake)
+        } //set body
     }
 
-    createBody(size) {
-        let RealAddSize = size - 1;
-        let newCreatePosition = [this.positions[0][0], this.positions[0][1]];
-        for (let i = 0; i < RealAddSize; i++) {
-            switch (this.direction) {
-                case "right":
-                    newCreatePosition[0] += this.size;
-                    break;
-                case "left":
-                    newCreatePosition[0] -= this.size;
-                    break;
-                case "down":
-                    newCreatePosition[1] += this.size;
-                    break;
-                case "up":
-                    newCreatePosition[1] -= this.size;
-                    break;
-                    
-            }
-            this.positions.unshift(newCreatePosition);
-            newCreatePosition = [this.positions[0][0], this.positions[0][1]];
-        }
-    }
     draw() {
-        ctx.fillStyle = "green";
+        game.ctx_game.fillStyle = "green";
         this.positions.forEach(position => {
-            ctx.fillRect(position[0], position[1], this.size, this.size);
+            game.ctx_game.fillRect(position[0], position[1], this.size, this.size);
         });
     }
     move() {
-        let newPositionX = this.positions[0][0];
-        let newPositionY = this.positions[0][1];
+        let newPosition = [this.positions[0][0], this.positions[0][1]];
         switch (this.direction) {
             case "right":
-                newPositionX += this.size;
-                break;
-            case "left":
-                newPositionX -= this.size;
+                newPosition[0] += this.size;
                 break;
             case "down":
-                newPositionY += this.size;
+                newPosition[1] += this.size;
+                break;
+            case "left":
+                newPosition[0] -= this.size;
                 break;
             case "up":
-                newPositionY -= this.size;
+                newPosition[1] -= this.size;
                 break;
         }
-        this.positions.unshift([newPositionX, newPositionY]);
-        if (this.verifyColliWall()) {
-            game.gameStats = "gameOver";
-            game.eraseScreen();
-            game.displayScreen();
+        this.readyToMove = true;
+        this.positions.unshift(newPosition);
+        if (this.colliWall()) {
+            alert("bateu na parede");
         }
-        if (!this.verifyColliApple()) {
+        if (!this.colliApple()) {
             this.positions.pop();
         } else {
-            game.score += 10;
+            score += 10;
+            this.colliApple().remove();
         }
-        for (let position of this.positions) {
-            if (position == this.positions[0]) continue;
-            if (this.positions[0][0] == position[0] && this.positions[0][1] == position[1]) {
-                game.gameOver();
-            }
-        }
-        
-
-        this.length = this.positions.length;
     }
-
-    startVerifyChangeMove() {
-        addEventListener("keydown", (event) => {
-            if (this.readyToSetDirection) {
-                switch (event.key) {
-                    case "ArrowRight":
-                    case "d":
-                        if (this.direction != "left") {
-                            this.direction = "right";
-                            this.readyToSetDirection = false;
-                        }
-                        return "detected";
-                    case "ArrowLeft":
-                    case "a":
-                        if (this.direction != "right") {
-                            this.direction = "left";
-                            this.readyToSetDirection = false;
-                        }
-                        return "detected";
-                    case "ArrowDown":
-                    case "s":
-                        if (this.direction != "up") {
-                            this.direction = "down";
-                            this.readyToSetDirection = false;
-                        }
-                        return "detected";
-                    case "ArrowUp":
-                    case "w":
-                        if (this.direction != "down") {
-                            this.direction = "up";
-                            this.readyToSetDirection = false;
-                        }
-                        break;
-                }
-            }
-        })
+    colliApple() {
+        return game.apples.find(apple => apple.position[0] == this.positions[0][0] && apple.position[1] == this.positions[0][1]);
     }
-    verifyColliWall() {
+    colliWall() {
         if (
-            this.positions[0][0] < 0 ||
-            this.positions[0][0] > canvasSize - this.size ||
-            this.positions[0][1] < extraCanvasSizeY ||
-            this.positions[0][1] > canvasSize + extraCanvasSizeY - this.size
+            this.positions[0][0] == -this.size ||
+            this.positions[0][0] == game.sizes_game[0] ||
+            this.positions[0][1] == -this.size ||
+            this.positions[0][1] == game.sizes_game[1]
         ) {
             return true;
         } else {
             return false;
         }
     }
-    verifyColliApple() {
-        for (const apple of apples) {
-            if (apple.position[0] == snake.positions[0][0] && apple.position[1] == snake.positions[0][1]) {
-                apple.removeApple();
-                game.createApple();
-                return true;
+
+    startVerifyMove() {
+        this.readyToMove = true;
+        addEventListener('keydown', (event) => {
+            if (this.readyToMove == true) {
+                switch (event.key.toLowerCase()) {
+                    case "arrowright":
+                    case "d":
+                        if (this.direction != "left") this.direction = "right";
+                        break;
+                    case "arrowdown":
+                    case "s":
+                        if (this.direction != "up") this.direction = "down";
+                        break;
+                    case "arrowleft":
+                    case "a":
+                        if (this.direction != "right") this.direction = "left";
+                        break;
+                    case "arrowup":
+                    case "w":
+                        if (this.direction != "down") this.direction = "up";
+                        break;
+                    default:
+                        return;
+                }
+                this.readyToMove = false;
             }
-        }
-        return false;
+        })
     }
+
 }
 
 class Apple {
     constructor() {
-        let pX = getApproximateNumber(getRandomN(0, canvasSize), game.proportion) ;
-        let pY = getApproximateNumber(getRandomN(0, canvasSize), game.proportion) + extraCanvasSizeY;
-        let pCorrects = true;
+        this.color = "red";
+        this.size = game.proportion;
         do {
-            for (const pS of snake.positions) {
-                if (pX == pS[0] && pY == pS[1]) {
-                    pCorrects = false;
-                    break;
-                }
-                if (snake.positions.indexOf(pS) == snake.positions.length - 1) {
-                    pCorrects = true;
-                }
-            }
-            if (!pCorrects) {
-                pX = getApproximateNumber(getRandomN(0, canvasSize), game.proportion);
-                pY = getApproximateNumber(getRandomN(extraCanvasSizeY, extraCanvasSizeY + canvasSize), game.proportion);
-            }
-        } while (!pCorrects)
-        
-        this.position = [pX, pY];
-        apples.push(this);
-        
-        this.color = "#ff0000";
-
-        if (game.applesDeterioration) {
-            let frames = game.deteriorationFrames;
-            let valueFrames = parseInt((256 / frames).toFixed());
-            let interval = (game.timeApplesDeterioration / frames) * 1000;
-            let cont = 1;
-            let intervalDeterioration = setInterval(() => {
-                cont++;
-                if (cont == frames) {
-                    clearInterval(intervalDeterioration);
-                    game.applesInDeterioration.push(this);
-                    this.color = "#000000";
-                    setTimeout(() => {
-                        if (apples.includes(this)) {
-                            game.applesInDeterioration.splice(game.applesInDeterioration.indexOf(this), 1);
-                            this.removeApple();
-                            game.createApple();
-                        }
-                    }, interval);
-                } else {
-                    let r = this.color[1] + this.color[2];
-                    let n = parseInt(r, 16) - valueFrames;
-                    r = n.toString(16);
-                    this.color = `#${r}0000`;
-                }
-            }, interval);
-        }
+            this.position = [
+            getRoundNumber_interval(getRandomNumber(0, game.sizes_game[0] - this.size), this.size),
+            getRoundNumber_interval(getRandomNumber(0, game.sizes_game[1] - this.size), this.size)
+            ]
+        } while (snake.positions.some(position => position[0] === this.position[0] && position[1] === this.position[1]))
     }
-    
     draw() {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.position[0], this.position[1], game.proportion, game.proportion);
+        game.ctx_game.fillStyle = this.color;
+        game.ctx_game.fillRect(this.position[0], this.position[1], this.size, this.size);
     }
-
-    removeApple() {
-        apples.splice(apples.indexOf(this), 1);
+    remove() {
+        game.applesToCreate++;
+        game.apples.splice(game.apples.indexOf(this), 1);
     }
 }
 
-let game = new Game(25);
-let snake = new Snake();
-let apples = [];
 
-game.createButtons([200, 40], [canvasSize / 2, canvasSize / 2], 10); // proporcionar com %
-game.displayScreen();
-
-
-/**
- * Arredonda um número para o múltiplo mais próximo de um determinado intervalo.
- *
- * @param {number} n O número a ser arredondado.
- * @param {number} intervalo O valor do múltiplo para o qual 'n' será aproximado. Deve ser diferente de zero.
- * @returns {number} O número 'n' arredondado para o múltiplo mais próximo do 'intervalo'.
- */
-function getApproximateNumber(n, intervalo) {
-    return Math.round(n / intervalo) * intervalo;
+function getRoundNumber_interval(n, interval) {
+    return Math.round(n / interval) * interval;
 }
 
-function getRandomN(min, max) {
+function getRandomNumber(min, max) {
     return (Math.random() * (max - min) + min);
 }
 
+let ç = (text) => console.log(text);
 
-
-
-
-
-
-
+let game = new Game();
+let snake = new Snake(3, [game.sizes_game[0] / 2, game.sizes_game[1] / 2]);
+game.createButtons();
+game.setScreen("screenInitial");
 

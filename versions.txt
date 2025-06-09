@@ -1,5 +1,0 @@
-#version 1.0.31052025
-Criar um jogo base da cobrinha inspirado em 'Snake';
-Ele deve ter tela de inicio, pausa e game over.
-Com score de 10 em 10.
-

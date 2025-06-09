@@ -1,0 +1,5 @@
+version --> 1.0.08062025
+jogo da cobrinha cujo o objetivo é pegar maçã e crecer até o max;
+colisões com a parede e com a apple;
+score de 10 em 10;
+sem config e sem restart.
