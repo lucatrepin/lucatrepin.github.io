@@ -3,3 +3,26 @@ jogo da cobrinha cujo o objetivo é pegar maçã e crecer até o max;
 colisões com a parede e com a apple;
 score de 10 em 10;
 sem config e sem restart.
+
+dificuldades:
+    "easy" - otavio {
+        Voce come macas em uma certa area.
+    }
+    "false" - levi {
+        Voce come é voce com um audio de uma risada de duente.
+    }
+    "normal" - jogo base {
+        Voce come macas.
+    }
+    "anormal" - miguel {
+        da pra ver que o jogo tá estranho "aparece constantemente umas mensagens not pogers escritas".
+    }
+    "veryHard" - luiz {
+        nasce numa pequena area de 3 por 3 e só mato que precisa comer 1 pra crecer 2 veses.
+    }
+    "developerMode" - pinheiro {
+        INDISINTEGRAVEL - Auto Game.
+    }
+    
+
+    
