@@ -28,7 +28,7 @@ class Game {
         this.ctx_game = this.canvas_game.getContext("2d");
         this.ctx_painel = this.canvas_painel.getContext("2d");
         
-        this.dificult = "Normal";
+        this.dificult = "Pinheiro";
 
         this.margin_button = 20;
 
@@ -68,9 +68,52 @@ class Game {
     }
 
     setSettings() {
+        this.minTime_createApple = 0;
+        this.maxTime_createApple = 0;
+
+        let newDirection = getRandomIntNumber(-1, 3);
+        if (newDirection == -1) newDirection = 0;
+        snake.direction = newDirection;
+
         switch (this.dificult) {
             case "Otavio":
                 this.dimension = [10, 10];
+                this.proportion = this.size_canvasGame[0] / this.dimension[0];
+
+                this.frames = 2;
+
+                this.delay_start = 10;
+                this.delay_retake = 10;
+
+                this.font_painel = "70px Arial";
+                this.color_painel = "rgb(0, 44, 240)";
+
+                this.apples = [];
+                
+                this.initialColor_food = [255, 0, 0];
+                this.finalColor_food = [0, 0, 0];
+
+                this.time_appleDeterioration = 8000;
+                this.tics_appleDeterioration = 10;
+
+                this.foodsToCreate = 2;
+                
+                this.img_food = img_food_Otavio;
+
+                snake.size = this.proportion;
+                snake.length = 3;
+
+                snake.initialColor = [0, 100, 0];
+                snake.finalColor = [0, 255, 0];
+
+                snake.imgs = {
+                    img_head: img_brotherHead_Otavio,
+                    img_body: null
+                }
+                snake.imgs.img_head.invertLevel = 2;
+                break;
+            case "Normal":
+                this.dimension = [12, 12];
                 this.proportion = this.size_canvasGame[0] / this.dimension[0];
 
                 this.frames = 2;
@@ -90,51 +133,10 @@ class Game {
                 this.tics_appleDeterioration = 10;
 
                 this.foodsToCreate = 2;
-
-                this.img_headSnake = null;
-                this.img_bodySnake = null;
-                this.img_food = null;
-
-                snake.size = this.proportion;
-                snake.direction = 3;
-                snake.length = 3;
-
-                snake.initialColor = [0, 100, 0];
-                snake.finalColor = [0, 255, 0];
-
-                snake.imgs = {
-                    img_head: img_brotherHead_Otavio,
-                    img_body: null
-                }
-                break;
-            case "Normal":
-                this.dimension = [10, 10];
-                this.proportion = this.size_canvasGame[0] / this.dimension[0];
-
-                this.frames = 3;
-
-                this.delay_start = 10;
-                this.delay_retake = 10;
-
-                this.font_painel = "70px Arial";
-                this.color_painel = "rgb(0, 44, 240)";
-
-                this.apples = [];
                 
-                this.initialColor_food = [255, 0, 0];
-                this.finalColor_food = [0, 0, 0];
-
-                this.time_appleDeterioration = 7000;
-                this.tics_appleDeterioration = 10;
-
-                this.foodsToCreate = 2;
-
-                this.img_headSnake = null;
-                this.img_bodySnake = null;
                 this.img_food = null;
 
                 snake.size = this.proportion;
-                snake.direction = 3;
                 snake.length = 3;
 
                 snake.initialColor = [0, 100, 0];
@@ -162,26 +164,24 @@ class Game {
                 this.initialColor_food = [255, 0, 0];
                 this.finalColor_food = [0, 0, 0];
 
-                this.time_appleDeterioration = 7000;
+                this.time_appleDeterioration = 6500;
                 this.tics_appleDeterioration = 10;
 
                 this.foodsToCreate = 2;
-
-                this.img_headSnake = null;
-                this.img_bodySnake = null;
-                this.img_food = null;
+                
+                this.img_food = img_food_Miguel;
 
                 snake.size = this.proportion;
-                snake.direction = 3;
                 snake.length = 3;
 
                 snake.initialColor = [0, 100, 0];
                 snake.finalColor = [0, 255, 0];
 
                 snake.imgs = {
-                    img_head: null,
+                    img_head: img_brotherHead_Miguel,
                     img_body: null
                 }
+                snake.imgs.img_head.invertLevel = 2;
                 break;
             case "Levi":
                 this.dimension = [15, 15];
@@ -200,26 +200,24 @@ class Game {
                 this.initialColor_food = [255, 0, 0];
                 this.finalColor_food = [0, 0, 0];
 
-                this.time_appleDeterioration = 7000;
+                this.time_appleDeterioration = 6000;
                 this.tics_appleDeterioration = 10;
 
                 this.foodsToCreate = 2;
-
-                this.img_headSnake = null;
-                this.img_bodySnake = null;
-                this.img_food = null;
+                
+                this.img_food = img_food_Levi;
 
                 snake.size = this.proportion;
-                snake.direction = 3;
                 snake.length = 3;
 
                 snake.initialColor = [0, 100, 0];
                 snake.finalColor = [0, 255, 0];
 
                 snake.imgs = {
-                    img_head: null,
+                    img_head: img_brotherHead_Levi,
                     img_body: null
                 }
+                snake.imgs.img_head.invertLevel = 3;
                 break;
             case "Luiz":
                 this.dimension = [20, 20];
@@ -238,32 +236,30 @@ class Game {
                 this.initialColor_food = [255, 0, 0];
                 this.finalColor_food = [0, 0, 0];
 
-                this.time_appleDeterioration = 7000;
+                this.time_appleDeterioration = 5000;
                 this.tics_appleDeterioration = 10;
 
                 this.foodsToCreate = 2;
-
-                this.img_headSnake = null;
-                this.img_bodySnake = null;
-                this.img_food = null;
+                
+                this.img_food = img_food_Luiz;
 
                 snake.size = this.proportion;
-                snake.direction = 3;
-                snake.length = 3;
+                snake.length = 1;
 
                 snake.initialColor = [0, 100, 0];
                 snake.finalColor = [0, 255, 0];
 
                 snake.imgs = {
-                    img_head: null,
+                    img_head: img_brotherHead_Luiz,
                     img_body: null
                 }
+                snake.imgs.img_head.invertLevel = 2;
                 break;
             case "Pinheiro":
-                this.dimension = [30, 30];
+                this.dimension = [20, 20];
                 this.proportion = this.size_canvasGame[0] / this.dimension[0];
 
-                this.frames = 10;
+                this.frames = 8;
 
                 this.delay_start = 10;
                 this.delay_retake = 10;
@@ -276,29 +272,27 @@ class Game {
                 this.initialColor_food = [255, 0, 0];
                 this.finalColor_food = [0, 0, 0];
 
-                this.time_appleDeterioration = 7000;
+                this.time_appleDeterioration = 5000;
                 this.tics_appleDeterioration = 10;
 
-                this.foodsToCreate = 2;
-
-                this.img_headSnake = null;
-                this.img_bodySnake = null;
-                this.img_food = null;
+                this.foodsToCreate = 5;
+                
+                this.img_food = img_food_Pinheiro;
 
                 snake.size = this.proportion;
-                snake.direction = 3;
-                snake.length = 3;
+                snake.length = 5;
 
                 snake.initialColor = [0, 100, 0];
                 snake.finalColor = [0, 255, 0];
 
                 snake.imgs = {
-                    img_head: null,
+                    img_head: img_brotherHead_Pinheiro,
                     img_body: null
                 }
+                snake.imgs.img_head.invertLevel = 1;
                 break;
+
         }
-        
         this.allSize_game = this.dimension[0] * this.dimension[1];
         this.percent_oneAppleScore = 100 / (this.allSize_game - snake.length);
         snake.setSnake();
@@ -465,7 +459,7 @@ class Game {
             if (this.apples.length + snake.length < this.allSize_game) {
                 this.apples.push(new Food());
             }
-        }, getRandomIntNumber(100, 1000));
+        }, getRandomIntNumber(this.minTime_createApple, this.maxTime_createApple));
     }
 
     display_textPainel(text, font, color, x, y) {
@@ -595,13 +589,7 @@ class Snake {
             this.positions.pop();
         }
         if (
-            (this.positions.filter((position, index) => index != 0).some(position => position[0] == this.positions[0][0] && position[1] == this.positions[0][1])) ||
-            (
-                this.positions[0][0] < 0 ||
-                this.positions[0][0] > game.size_canvasGame[0] - game.proportion ||
-                this.positions[0][1] < 0 ||
-                this.positions[0][1] > game.size_canvasGame[1] - game.proportion
-            )
+            (this.positions.filter((position, index) => index != 0).some(position => position[0] == this.positions[0][0] && position[1] == this.positions[0][1])) || verifyColliWall(this.positions[0])
         ) {
             game.stopGame("GameOver");
             return true;
@@ -633,7 +621,7 @@ class Snake {
             let centerY = this.positions[0][1] + this.size / 2;
             game.ctx_game.save();
             game.ctx_game.translate(centerX, centerY);
-            game.ctx_game.rotate(Math.PI * (this.direction + 1) / 2);
+            game.ctx_game.rotate(Math.PI * (this.direction + 1 + this.imgs.img_head.invertLevel) / 2);
             game.ctx_game.drawImage(this.imgs.img_head, -this.size / 2, -this.size / 2, this.size, this.size);
             game.ctx_game.restore();
         }
@@ -708,7 +696,6 @@ class Button {
 class Food {
     constructor() {
         do {
-            //console.log("tentando setar position");
             this.position = getRandomPosition(0, game.size_canvasGame[0] - game.proportion, 0, game.size_canvasGame[1] - game.proportion, game.proportion);
         } while(
             (snake.positions.some(position => position[0] == this.position[0] && position[1] == this.position[1]) ||
@@ -731,8 +718,13 @@ class Food {
         }, game.time_appleDeterioration / game.tics_appleDeterioration);
     }
     draw() {
-        game.ctx_game.fillStyle = `rgb(${this.color[0]}, ${this.color[1]}, ${this.color[2]})`;
-        game.ctx_game.fillRect(this.position[0], this.position[1], this.size, this.size);
+        if (game.img_food) {
+            game.ctx_game.drawImage(game.img_food, this.position[0], this.position[1], this.size, this.size);
+        } else {
+            game.ctx_game.fillStyle = `rgb(${this.color[0]}, ${this.color[1]}, ${this.color[2]})`;
+            game.ctx_game.fillRect(this.position[0], this.position[1], this.size, this.size);
+        }
+        
     }
     remove() {
         if (game.apples.includes(this)) {
@@ -751,11 +743,37 @@ let body = document.getElementsByTagName("body")[0];
 let img_brotherHead_Otavio = new Image();
 img_brotherHead_Otavio.src = "imgs/brothers/head/otavio.png";
 
-let img_brotherBody_Otavio = new Image();
-img_brotherBody_Otavio.src = "imgs/brothers/body/otavio.png";
+let img_brotherHead_Miguel = new Image();
+img_brotherHead_Miguel.src = "imgs/brothers/head/miguel.png";
+
+let img_brotherHead_Levi = new Image();
+img_brotherHead_Levi.src = "imgs/brothers/head/levi.png";
+
+let img_brotherHead_Luiz = new Image();
+img_brotherHead_Luiz.src = "imgs/brothers/head/luiz.png";
+
+let img_brotherHead_Pinheiro = new Image();
+img_brotherHead_Pinheiro.src = "imgs/brothers/head/pinheiro.png";
+
+
+// let img_brotherBody_Otavio = new Image();
+// img_brotherBody_Otavio.src = "imgs/brothers/body/otavio.png";
 
 let img_food_Otavio = new Image();
 img_food_Otavio.src = "imgs/foods/otavio.png";
+
+let img_food_Miguel = new Image();
+img_food_Miguel.src = "imgs/foods/miguel.png";
+
+let img_food_Levi = new Image();
+img_food_Levi.src = "imgs/foods/levi.png";
+
+let img_food_Luiz = new Image();
+img_food_Luiz.src = "imgs/foods/luiz.png";
+
+let img_food_Pinheiro = new Image();
+img_food_Pinheiro.src = "imgs/foods/pinheiro.png";
+
 
 let game = new Game(750, 750, 0.11, "gray", "gray");
 let snake = new Snake();
@@ -771,7 +789,7 @@ function getRandomPosition(minX, maxX, minY, maxY, interval) {
 }
 
 function getRandomIntNumber(min, max) {
-    return parseInt(Math.random() * (max - min) + min);
+    return Math.round(Math.random() * (max - min) + min);
 }
 
 function setColor_site(button) {
@@ -782,4 +800,13 @@ function setColor_site(button) {
         button.textContent = "Light Mode";
         body.style.backgroundColor = "black";
     }
+}
+
+function verifyColliWall(position) {
+    if (
+        position[0] < 0 ||
+        position[0] > game.size_canvasGame[0] - game.proportion ||
+        position[1] < 0 ||
+        position[1] > game.size_canvasGame[1] - game.proportion
+    ) return true;
 }
