@@ -18,7 +18,7 @@ dificuldades:
         da pra ver que o jogo tá estranho "aparece constantemente umas mensagens not pogers escritas".
     }
     "veryHard" - luiz {
-        nasce numa pequena area de 3 por 3 e só mato que precisa comer 1 pra crecer 2 veses.
+        nasce numa pequena area de 3 por 3 e só mato que precisa comer 3 pra crecer
     }
     "developerMode" - pinheiro {
         INDISINTEGRAVEL - Auto Game.

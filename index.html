@@ -5,20 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
         body {
             background-color: black;
             display: flex;
             flex-direction: column;
+            width: fit-content;
+            justify-self: center;
         }
-        canvas {
-            margin-top: 5px;
-            align-self: center;
+        body > * {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <canvas id="canvasPainel"></canvas>
-    <canvas id="canvasGame"></canvas>
     <script src="script.js"></script>
+    <button onclick="setColor_site(this)">Light Mode</button>
 </body>
 </html>
