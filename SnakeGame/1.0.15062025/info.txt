@@ -1,2 +1,0 @@
-Refatorando o jogo com mais eficiencia no script e com IA --> mais css e beleza tb
-    
