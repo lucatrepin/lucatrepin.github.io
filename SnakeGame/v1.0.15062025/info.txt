@@ -1,1 +1,0 @@
-Refatorando o jogo com mais eficiencia no script e com IA (que vai ser 100% / pelo menos 80%) --> mais css e beleza tb;
