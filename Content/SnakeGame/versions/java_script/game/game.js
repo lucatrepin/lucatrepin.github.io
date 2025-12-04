@@ -119,6 +119,7 @@ class Game {
 
             if (!this.snakes[0].is_alive) {
                 clearInterval(loop);
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 this.game_over();
             }
         }, 1000.0 / this.frames);
