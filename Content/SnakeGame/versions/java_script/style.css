@@ -1,0 +1,26 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    width: 100dvw;
+    height: 100dvh;
+}
+
+/* Ensure the app area always fills the viewport */
+body, main {
+    width: 100dvw;
+    height: 100dvh;
+}
+
+body, main {
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/screens.css">
+</head>
+<body>
+    <main>
+        <div id="screens_div">
+            <div id="screen_menu" class="screen">
+                <h1>Bem Vindo ao Snake Game</h1>
+                <button id="start_game_btn" class="btn">Start Game</button>
+                <button id="open_settings_btn" class="btn">Settings</button>
+            </div>
+            <div id="screen_game" class="screen">
+                <canvas id="canvas_game"></canvas>
+            </div>
+            <div id="screen_settings" class="screen">
+                <h1>Settings Screen</h1>
+                
+                <select name="game_difficulty" id="game_difficulty_select">
+                    <option value="0" selected>Easy</option>
+                    <option value="1">Medium</option>
+                    <option value="2">Hard</option>
+                </select>
+                
+                <button id="exit_settings_btn" class="btn">Exit Settings</button>
+            </div>
+        </div>
+    </main>
+    <script src="scripts/screens.js" type="module"></script>
+    <script src="index.js" type="module"></script>
+</body>
+</html>
